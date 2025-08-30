@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONIMIX STORE</title>
+  <style>
+    /* --- Animated Rotating Gradient Background --- */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(45deg, #1e1e2f, #2c2c3e, #1e1e2f, #2c2c3e);
+      background-size: 400% 400%;
+      animation: rotateBg 20s linear infinite;
+      color: #fff;
+    }
+    @keyframes rotateBg {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- Container & Links --- */
+    .container {
+      text-align: center;
+      z-index: 2;
+      position: relative;
+    }
+    h1 {
+      font-size: 3em;
+      color: #fff;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+    .links {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .links a {
+      text-decoration: none;
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+      padding: 15px 30px;
+      border-radius: 12px;
+      font-size: 1.3em;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255,255,255,0.05);
+    }
+    .links a:hover {
+      background: #ff3b2e;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255,59,46,0.6);
+    }
+
+    /* --- Canvas for Love/Fire Particles --- */
+    #love-fire-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="typewriter"></h1>
+    <div class="links">
+      <a href="Animated-Tesla-Landing-Page/" class="cursor-target">🚗 Tesla Landing Page</a>
+      <a href="Airpods-Animation/" class="cursor-target">🎧 Airpods Animation</a>
+    </div>
+  </div>
+
+  <canvas id="love-fire-canvas"></canvas>
+
+  <script>
+    // --- Typewriter Effect ---
+    const text = "Welcome to ONIMIX STORE";
+    let i = 0;
+    function typeWriter() {
+      if (i < text.length) {
+        document.getElementById("typewriter").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 100);
+      }
+    }
+    window.onload = typeWriter;
+
+    // --- Love/Fire Particle Effect ---
+    const canvas = document.getElementById('love-fire-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    function Particle(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 8 + 4;
+      this.speedX = Math.random() * 3 - 1.5;
+      this.speedY = Math.random() * -3 - 1;
+      this.color = Math.random() < 0.5 ? 'red' : 'orange';
+      this.alpha = 1;
+    }
+
+    Particle.prototype.update = function() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.alpha -= 0.02;
+    }
+
+    Particle.prototype.draw = function() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        if (particles[i].alpha <= 0) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('mousemove', function(e) {
+      for (let i = 0; i < 3; i++) {
+        particles.push(new Particle(e.clientX, e.clientY));
+      }
+    });
+
+    // --- Resize Canvas ---
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
